@@ -249,10 +249,9 @@ worksheetWriteUTCTime :: Worksheet ->
                         UTCTime -> Maybe Format -> IO ()
 worksheetWriteUTCTime (Worksheet ws) row col t mfmt = do
     let tz = localTimeToUTC utc . utcToLocalTime (TimeZone 60 True "BST")
-        ts = utcTimeToPOSIXSeconds (read "1900-01-01 00:00:00") - (2 * 24 * 60 * 60)
+        ts = utcTimeToPOSIXSeconds (read "1900-01-01 00:00:00 UTC") - (2 * 24 * 60 * 60)
         ft = fromRational . toRational . (/ (24 * 60 * 60)) . (+ (negate ts)) . utcTimeToPOSIXSeconds . tz
-    worksheet_write_number ws row col (ft t) (maybe nullPtr unFormat mfmt)
-  
+    worksheetWriteNumber ws row col (ft t) mfmt
 
 worksheetWriteFormula :: Worksheet ->
                          Row -> Col ->
